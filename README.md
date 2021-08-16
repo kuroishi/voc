@@ -16,9 +16,12 @@ Usage
 
 use alc.co.jp by default. Using -d(--dic) you can use Dictionary.app as well.
 
+see the -h option for details.
+
+e.g.
 ```
 % voc -h
 USAGE:
-    voc [-a|--alc][-d|--dic][-h] WORD_OR_PHRASE
+    voc [-a|--alc][-d|--dic][-s|--skell][-h|--help] WORD_OR_PHRASE
         default: alc
 ```

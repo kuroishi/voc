@@ -9,7 +9,7 @@ use Getopt::Long;
 sub usage {
     print STDERR
 "USAGE:\n",
-"    voc [-a|--alc][-d|--dic][-h] WORD_OR_PHRASE\n",
+"    voc [-a|--alc][-d|--dic][-s|--skell][-h|--help] WORD_OR_PHRASE\n",
 "        default: alc\n"
 ;
     exit 1;
@@ -17,10 +17,12 @@ sub usage {
 
 my $alc = 1;
 my $dic = 0;
+my $skell = 0;
 GetOptions(
-    "a|alc"  => sub { $alc = 1; $dic = 0; },
-    "d|dic"  => sub { $alc = 0; $dic = 1; },
-    "h|help" => sub { usage(); exit 1; })
+    "a|alc"   => sub { $alc = 1; $dic = 0; $skell = 0; },
+    "d|dic"   => sub { $alc = 0; $dic = 1; $skell = 0; },
+    "s|skell" => sub { $alc = 0; $dic = 0; $skell = 1; },
+    "h|help"  => sub { usage(); exit 1; })
 or die("Error in command line arguments\n");
 
 my $ret;
@@ -44,6 +46,11 @@ if ($alc) {
 
 if ($dic) {
     my $str = sprintf("dict://%s", $qs);
+    $ret = `open $str`;
+}
+
+if ($skell) {
+    my $str = sprintf('https://skell.sketchengine.eu/#result?lang=en\&f=concordance\&query=%s', $qs);
     $ret = `open $str`;
 }
 
