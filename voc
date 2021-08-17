@@ -6,13 +6,29 @@ use v5.10;
 
 use Getopt::Long;
 
+my $HIST = ".voc_history";
+
 sub usage {
     print STDERR
-"USAGE:\n",
-"    voc [-a|--alc][-d|--dic][-s|--skell][-h|--help] WORD_OR_PHRASE\n",
-"        default: alc\n"
-;
+        "USAGE:\n",
+        "    voc [-a|--alc][-d|--dic][-s|--skell][-h|--help] WORD_OR_PHRASE\n",
+        "        default: alc\n"
+        ;
     exit 1;
+}
+
+sub save_history {
+    my $arg = shift;
+    
+    open(my $hist, ">>", "$ENV{'HOME'}/$HIST")
+        or warn "Couldn't open the history file";
+    
+    print $hist sprintf("%d\t%s\n", time(), $arg);
+    
+    close($hist)
+        or warn "close failed: $!";
+
+    return;
 }
 
 my $alc = 1;
@@ -23,7 +39,7 @@ GetOptions(
     "d|dic"   => sub { $alc = 0; $dic = 1; $skell = 0; },
     "s|skell" => sub { $alc = 0; $dic = 0; $skell = 1; },
     "h|help"  => sub { usage(); exit 1; })
-or die("Error in command line arguments\n");
+    or die("Error in command line arguments\n");
 
 my $ret;
 $ret = `uname`;
@@ -53,6 +69,8 @@ if ($skell) {
     my $str = sprintf('https://skell.sketchengine.eu/#result?lang=en\&f=concordance\&query=%s', $qs);
     $ret = `open $str`;
 }
+
+save_history(join(" ", @ARGV));
 
 exit 0;
 
